@@ -1,0 +1,21 @@
+.wm-display {
+  font-family: var(--wm-f-serif);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.wm-label {
+  font-family: var(--wm-f-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--wm-text-mute);
+}
+
+.wm-meta {
+  font-family: var(--wm-f-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+}
+
+.wm-body { font-family: var(--wm-f-ui); }

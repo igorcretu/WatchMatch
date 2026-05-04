@@ -1,0 +1,51 @@
+// WatchMatch design tokens — ported from design-tokens.jsx WM object
+:root {
+  // Backgrounds
+  --wm-bg:  #0a0908;
+  --wm-bg2: #13110f;
+  --wm-bg3: #1c1916;
+  --wm-bg4: #252220;
+
+  // Lines / borders
+  --wm-line:        rgba(255, 245, 220, 0.08);
+  --wm-line-strong: rgba(255, 245, 220, 0.15);
+
+  // Text
+  --wm-text:       #f5efe4;
+  --wm-text-dim:   rgba(245, 239, 228, 0.65);
+  --wm-text-mute:  rgba(245, 239, 228, 0.42);
+  --wm-text-faint: rgba(245, 239, 228, 0.22);
+
+  // Accent — warm cinematic amber
+  --wm-amber:      oklch(0.78 0.15 70);
+  --wm-amber-soft: oklch(0.78 0.15 70 / 0.18);
+  --wm-amber-line: oklch(0.78 0.15 70 / 0.4);
+  --wm-amber-deep: oklch(0.55 0.12 60);
+
+  // Semantic
+  --wm-like:      oklch(0.74 0.16 145);
+  --wm-like-soft: oklch(0.74 0.16 145 / 0.18);
+  --wm-pass:      oklch(0.62 0.20 25);
+  --wm-pass-soft: oklch(0.62 0.20 25 / 0.16);
+
+  // Typography
+  --wm-f-serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --wm-f-ui:    "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --wm-f-mono:  "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  // Spacing scale
+  --wm-sp-1: 4px;
+  --wm-sp-2: 8px;
+  --wm-sp-3: 12px;
+  --wm-sp-4: 16px;
+  --wm-sp-5: 20px;
+  --wm-sp-6: 24px;
+  --wm-sp-8: 32px;
+
+  // Radii
+  --wm-r-sm: 8px;
+  --wm-r-md: 14px;
+  --wm-r-lg: 20px;
+  --wm-r-xl: 28px;
+  --wm-r-pill: 999px;
+}
