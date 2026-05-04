@@ -22,7 +22,7 @@ frontend/
     │   ├── _reset.scss            ← Box-sizing reset, body defaults
     │   └── _typography.scss       ← Font-face declarations
     ├── environments/
-    │   ├── environment.ts         ← Dev config  (apiUrl = localhost:8010)
+    │   ├── environment.ts         ← Dev config  (apiUrl = localhost:8050)
     │   └── environment.prod.ts    ← Prod config (apiUrl = matchapi.crig.dev)
     └── app/
         ├── app.ts                 ← Root component — just renders <router-outlet>
@@ -82,7 +82,7 @@ Angular 17+. There is no `AppModule` in this project.
 `environment.ts` and `environment.prod.ts` contain the same shape but different values:
 
 ```
-environment.ts      → apiUrl: 'http://localhost:8010/api'
+environment.ts      → apiUrl: 'http://localhost:8050/api'
 environment.prod.ts → apiUrl: 'https://matchapi.crig.dev/api'
 ```
 

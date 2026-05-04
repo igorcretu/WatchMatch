@@ -8,7 +8,7 @@ pip install -r requirements.txt
 SECRET_KEY=changeme uvicorn main:app --reload
 ```
 
-Open `http://localhost:8010/docs` — the Swagger UI lets you create a user and verify all endpoints work.
+Open `http://localhost:8050/docs` — the Swagger UI lets you create a user and verify all endpoints work.
 
 ---
 
@@ -21,7 +21,7 @@ npm start          # → http://localhost:4200
 ```
 
 Register a user, pair with a second account, start a session, swipe through cards.  
-The app talks to `http://localhost:8010/api` in dev mode (see `src/environments/environment.ts`).
+The app talks to `http://localhost:8050/api` in dev mode (see `src/environments/environment.ts`).
 
 ---
 
@@ -41,7 +41,7 @@ docker compose --env-file .env up -d --build
 
 Confirm it's running:
 ```bash
-curl http://localhost:8010/health
+curl http://localhost:8050/health
 ```
 
 ---
@@ -62,7 +62,7 @@ credentials-file: /home/pi/.cloudflared/<tunnel-id>.json
 
 ingress:
   - hostname: matchapi.crig.dev
-    service: http://localhost:8010
+    service: http://localhost:8050
   - service: http_status:404
 ```
 
@@ -137,9 +137,9 @@ In `backend/main.py`, the CORS origins list includes `*.netlify.app`. Once you h
 
 | Thing | Where |
 |---|---|
-| API base (dev) | `http://localhost:8010/api` |
+| API base (dev) | `http://localhost:8050/api` |
 | API base (prod) | `https://matchapi.crig.dev/api` |
-| Swagger docs | `http://localhost:8010/docs` |
+| Swagger docs | `http://localhost:8050/docs` |
 | Frontend dev | `http://localhost:4200` |
 | DB file (Pi) | `/var/lib/docker/volumes/backend_db_data/` |
 | Auth token storage | `localStorage` key `wm_token` |
