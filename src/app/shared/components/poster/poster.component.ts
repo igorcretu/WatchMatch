@@ -1,6 +1,7 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PosterVariant } from '../../../core/models/movie.model';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'wm-poster',
@@ -8,7 +9,15 @@ import { PosterVariant } from '../../../core/models/movie.model';
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="poster" [style.background]="bg">
+    <div class="poster" [style.background]="showImg() ? '#0a0908' : bg">
+      @if (showImg()) {
+        <img class="poster-img"
+          [src]="imgUrl"
+          [alt]="title"
+          loading="lazy"
+          (error)="imgError.set(true)"
+        >
+      }
       <div class="grain"></div>
       <div class="vignette"></div>
       <div class="title-block">
@@ -30,17 +39,24 @@ import { PosterVariant } from '../../../core/models/movie.model';
       position: relative; width: 100%; height: 100%;
       overflow: hidden; border-radius: inherit;
     }
+    .poster-img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
     .grain {
-      position: absolute; inset: 0; opacity: 0.18; mix-blend-mode: overlay;
+      position: absolute; inset: 0; opacity: 0.18; mix-blend-mode: overlay; z-index: 1;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
     }
     .vignette {
-      position: absolute; inset: 0;
+      position: absolute; inset: 0; z-index: 2;
       background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.6) 100%);
     }
     .title-block {
-      position: absolute; left: 0; right: 0; bottom: 0;
+      position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
       padding: 14% 8% 10%; color: var(--wm-text); font-family: var(--wm-f-mono);
+      background: linear-gradient(0deg, rgba(0,0,0,0.72) 0%, transparent 100%);
     }
     .year {
       font-size: 0.62em; letter-spacing: 0.18em; opacity: 0.5;
@@ -51,16 +67,27 @@ import { PosterVariant } from '../../../core/models/movie.model';
       letter-spacing: -0.01em; text-transform: uppercase; font-weight: 400;
     }
     .corner-mark {
-      position: absolute; top: 6%; left: 6%;
+      position: absolute; top: 6%; left: 6%; z-index: 3;
       color: var(--wm-text); display: flex; align-items: center;
     }
   `],
 })
 export class PosterComponent {
-  @Input() title = '';
-  @Input() year = 0;
-  @Input() hue = 30;
+  @Input() title      = '';
+  @Input() year       = 0;
+  @Input() hue        = 30;
   @Input() variant: PosterVariant = 'gradient';
+  @Input() posterPath = '';
+
+  imgError = signal(false);
+
+  get imgUrl(): string {
+    return this.posterPath ? `${environment.tmdbImageBase}${this.posterPath}` : '';
+  }
+
+  showImg(): boolean {
+    return !!this.imgUrl && !this.imgError();
+  }
 
   get bg(): string {
     const h = this.hue;
