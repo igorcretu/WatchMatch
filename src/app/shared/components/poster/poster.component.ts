@@ -15,7 +15,13 @@ import { PosterVariant } from '../../../core/models/movie.model';
         <div class="year">{{ year }}</div>
         <div class="title">{{ title }}</div>
       </div>
-      <div class="corner-mark">WM</div>
+      <div class="corner-mark">
+        <svg width="14" height="14" viewBox="0 0 64 64" fill="none" opacity="0.45">
+          <path d="M 6 14 L 16 50 L 22 32 L 28 50 L 32 38" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M 32 26 L 36 14 L 42 32 L 48 14 L 58 50" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.92"/>
+          <circle cx="32" cy="32" r="4" fill="currentColor"/>
+        </svg>
+      </div>
     </div>
   `,
   styles: [`
@@ -46,8 +52,7 @@ import { PosterVariant } from '../../../core/models/movie.model';
     }
     .corner-mark {
       position: absolute; top: 6%; left: 6%;
-      font-family: var(--wm-f-mono); font-size: 0.55em;
-      letter-spacing: 0.2em; color: var(--wm-text); opacity: 0.4;
+      color: var(--wm-text); display: flex; align-items: center;
     }
   `],
 })

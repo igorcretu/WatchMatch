@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { inject } from '@angular/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { IconComponent } from '../../../shared/components/icon/icon.component';
+import { LogoComponent } from '../../../shared/components/logo/logo.component';
 
 @Component({
   selector: 'wm-register',
   standalone: true,
-  imports: [FormsModule, IconComponent],
+  imports: [FormsModule, IconComponent, LogoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="auth-screen">
@@ -21,6 +22,7 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
       </header>
 
       <div class="content">
+        <wm-logo variant="lockup" [size]="26"></wm-logo>
         <h1 class="headline">Welcome to<br><em>WatchMatch</em>.</h1>
 
         <form class="form" (ngSubmit)="submit()">

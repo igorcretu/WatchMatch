@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { PosterComponent } from '../../../shared/components/poster/poster.component';
+import { LogoComponent } from '../../../shared/components/logo/logo.component';
 import { Movie } from '../../../core/models/movie.model';
 
 const PREVIEW_MOVIES: Pick<Movie, 'id' | 'title' | 'year' | 'hue' | 'variant'>[] = [
@@ -21,7 +22,7 @@ const PREVIEW_MOVIES: Pick<Movie, 'id' | 'title' | 'year' | 'hue' | 'variant'>[]
 @Component({
   selector: 'wm-onboarding',
   standalone: true,
-  imports: [PosterComponent],
+  imports: [PosterComponent, LogoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="onboarding">
@@ -37,7 +38,7 @@ const PREVIEW_MOVIES: Pick<Movie, 'id' | 'title' | 'year' | 'hue' | 'variant'>[]
       </div>
 
       <div class="cta">
-        <div class="brand">WATCHMATCH</div>
+        <wm-logo variant="lockup" [size]="28"></wm-logo>
         <h1 class="headline">Stop arguing.<br>Start <em>watching</em>.</h1>
         <p class="sub">Two people. Two filter sets. One swipe deck. The first thing you both like wins.</p>
 
@@ -59,7 +60,7 @@ const PREVIEW_MOVIES: Pick<Movie, 'id' | 'title' | 'year' | 'hue' | 'variant'>[]
     .collage-item { aspect-ratio: 2/3; border-radius: 6px; overflow: hidden; opacity: 0.85; }
     .hero-fade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,9,8,0.8) 0%, transparent 30%, var(--wm-bg) 90%); }
     .cta { position: absolute; left: 24px; right: 24px; bottom: 40px; display: flex; flex-direction: column; gap: 18px; }
-    .brand { font-family: var(--wm-f-mono); font-size: 11px; letter-spacing: 0.3em; color: var(--wm-amber); }
+    wm-logo { margin-bottom: -4px; }
     .headline { font-family: var(--wm-f-serif); font-size: 44px; line-height: 1.0; letter-spacing: -0.02em; font-weight: 400; }
     .headline em { color: var(--wm-amber); font-style: italic; }
     .sub { color: var(--wm-text-dim); font-size: 15px; line-height: 1.5; }
