@@ -177,28 +177,31 @@ const FEATURES = [
       overflow: hidden;
     }
 
-    /* Mobile: backdrop fills full hero, CTA overlays at bottom */
+    /* Backdrop: always absolute, always covers full hero */
     .backdrop {
       position: absolute;
       inset: 0;
       display: flex;
       gap: 8px;
       padding: 0 8px;
-    }
-
-    .col {
-      flex: 1;
-      max-width: 120px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
       overflow: hidden;
     }
 
-    /* Mobile animation speeds */
+    /* Explicit height = 12 items × 165px + 11 gaps × 8px = 2068px.
+       This makes translateY(-50%) = exactly -1034px on every screen size,
+       so animation speed is pixel-identical on mobile and desktop. */
+    .col {
+      flex: none;
+      width: 110px;
+      height: 2068px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
     .col-a { animation: scroll-up 30s linear infinite; }
-    .col-b { animation: scroll-up 26s linear infinite; margin-top: -52%; }
-    .col-c { animation: scroll-up 34s linear infinite; margin-top: -28%; }
+    .col-b { animation: scroll-up 26s linear infinite; margin-top: -346px; }
+    .col-c { animation: scroll-up 34s linear infinite; margin-top: -692px; }
 
     @keyframes scroll-up {
       from { transform: translateY(0); }
@@ -207,7 +210,8 @@ const FEATURES = [
 
     .pw {
       flex-shrink: 0;
-      aspect-ratio: 2 / 3;
+      width: 110px;
+      height: 165px;
       border-radius: 8px;
       overflow: hidden;
       opacity: 0.72;
@@ -402,63 +406,50 @@ const FEATURES = [
     /* ── DESKTOP (≥768px) ── */
     @media (min-width: 768px) {
 
-      /* Hero: left panel (fixed-width posters) + right panel (CTA) */
-      .hero { display: flex; align-items: stretch; }
-
-      /* Backdrop becomes a fixed-width left column so poster dimensions
-         never change with viewport — this keeps animation speed identical
-         on all screen sizes */
-      .backdrop {
-        position: relative;
-        width: auto;
-        flex-shrink: 0;
-        inset: auto;
-      }
-
-      /* Fix column width so poster height is always ~165px regardless of screen */
-      .col {
-        flex: none;
-        width: 110px;
-      }
-
+      /* Backdrop stays absolute — no position toggle.
+         Right-side gradient fades posters into the dark background. */
       .fade-top { display: none; }
       .fade-bot { display: none; }
       .fade-right {
         display: block;
         position: absolute;
         top: 0; right: 0; bottom: 0;
-        width: 50%;
-        background: linear-gradient(90deg, transparent 0%, var(--wm-bg) 100%);
+        width: 65%;
+        background: linear-gradient(90deg, transparent 0%, var(--wm-bg) 55%);
       }
 
-      /* CTA: right side, centered vertically */
+      /* CTA: right half of hero, centered vertically */
       .hero-cta {
-        position: relative;
-        left: auto; right: auto; bottom: auto;
-        flex: 1;
-        padding: 0 56px;
-        justify-content: center;
-        align-items: flex-start;
+        left: auto;
+        right: 0;
+        bottom: auto;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 55%;
+        padding: 0 64px;
+        gap: 28px;
       }
 
-      /* Buttons: natural width on desktop */
+      /* Buttons: natural width, side by side */
       .actions { flex-direction: row; flex-wrap: wrap; gap: 12px; }
       .btn-primary, .btn-ghost-pill {
         width: auto;
-        padding: 0 28px;
+        padding: 0 32px;
         flex-shrink: 0;
       }
 
       .scroll-hint { display: none; }
 
-      /* Section layout */
+      /* Sections */
       .section { padding: 80px 48px; }
-
-      /* Features: 3 columns */
       .feature-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
 
       /* Steps: horizontal */
-      .steps { flex-direction: row; border-top: 1px solid var(--wm-line); border-bottom: 1px solid var(--wm-line); }
+      .steps {
+        flex-direction: row;
+        border-top: 1px solid var(--wm-line);
+        border-bottom: 1px solid var(--wm-line);
+      }
       .step {
         flex: 1; flex-direction: column; gap: 12px;
         padding: 24px 24px 24px 0;
@@ -467,6 +458,10 @@ const FEATURES = [
         margin-right: 24px;
       }
       .step:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+    }
+
+    @media (min-width: 1200px) {
+      .hero-cta { padding: 0 80px; }
     }
 
     @media (min-width: 1200px) {
