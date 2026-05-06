@@ -6,7 +6,7 @@ import { IconComponent } from '../../shared/components/icon/icon.component';
 import { TabBarComponent } from '../../layout/tab-bar/tab-bar.component';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
-import { Movie, QueueItem } from '../../core/models/movie.model';
+import { QueueItem } from '../../core/models/movie.model';
 
 @Component({
   selector: 'wm-home',
@@ -52,7 +52,7 @@ import { Movie, QueueItem } from '../../core/models/movie.model';
 
         <!-- Quick actions -->
         <div class="quick-grid">
-          <div class="quick-card" (click)="router.navigate(['/group/g1'])">
+          <div class="quick-card" (click)="router.navigate(['/group/new'])">
             <wm-icon name="users" [size]="18" style="color:var(--wm-amber)"></wm-icon>
             <div class="quick-label">Group night</div>
             <div class="quick-sub">3+ people</div>
@@ -79,7 +79,7 @@ import { Movie, QueueItem } from '../../core/models/movie.model';
               <div class="poster-item" (click)="router.navigate(['/library/queue'])">
                 <div class="poster-wrap">
                   <wm-poster [title]="item.movie.title" [year]="item.movie.year"
-                    [hue]="item.movie.hue" [variant]="item.movie.variant"></wm-poster>
+                    [hue]="item.movie.hue" [variant]="item.movie.variant" [posterPath]="item.movie.poster_path"></wm-poster>
                 </div>
                 <div class="poster-title">{{ item.movie.title }}</div>
                 <div class="poster-meta">{{ item.movie.providers[0] }} · {{ item.movie.runtime }}m</div>
@@ -90,23 +90,6 @@ import { Movie, QueueItem } from '../../core/models/movie.model';
           <div class="empty-queue">
             <wm-icon name="bookmark" [size]="28" style="color:var(--wm-text-mute)"></wm-icon>
             <span>Your queue is empty — start swiping!</span>
-          </div>
-        }
-
-        <!-- Leaving soon (static until TMDB integration) -->
-        @if (leavingSoon(); as m) {
-          <div class="section-pad">
-            <div class="label">LEAVING SOON</div>
-            <div class="leaving-card">
-              <div class="leaving-poster">
-                <wm-poster [title]="m.title" [year]="m.year" [hue]="m.hue" [variant]="m.variant"></wm-poster>
-              </div>
-              <div class="leaving-info">
-                <div class="leaving-title">{{ m.title }}</div>
-                <div class="leaving-sub">Off Disney+ in 5 days</div>
-                <div class="expires-badge">EXPIRES MAY 09</div>
-              </div>
-            </div>
           </div>
         }
 
@@ -161,24 +144,17 @@ export class HomeComponent implements OnInit {
   private auth = inject(AuthService);
   readonly user = this.auth.currentUser;
 
-  queueItems  = signal<QueueItem[]>([]);
-  leavingSoon = signal<Movie | null>(null);
+  queueItems = signal<QueueItem[]>([]);
 
   readonly dayLabel = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];
 
   constructor(public router: Router) {}
 
   ngOnInit(): void {
-    this.api.getQueue().subscribe(q => this.queueItems.set(q.slice(0, 5)));
-    this.api.getMovies().subscribe(movies => {
-      const disney = movies.find(m => m.providers.includes('Disney+'));
-      if (disney) this.leavingSoon.set(disney);
-    });
+    this.api.getQueue().subscribe(q => this.queueItems.set(q.filter(i => !i.watched).slice(0, 5)));
   }
 
   startSession(): void {
-    this.api.createSession(this.user()?.partner_id ?? undefined).subscribe(session => {
-      this.router.navigate(['/session', session.id, 'filters']);
-    });
+    this.router.navigate(['/session/new']);
   }
 }

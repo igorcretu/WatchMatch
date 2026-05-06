@@ -1,8 +1,9 @@
-import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AvatarComponent } from '../../../shared/components/avatar/avatar.component';
 import { IconComponent } from '../../../shared/components/icon/icon.component';
 import { AuthService } from '../../../core/services/auth.service';
+import { ApiService } from '../../../core/services/api.service';
 
 @Component({
   selector: 'wm-waiting',
@@ -38,7 +39,9 @@ import { AuthService } from '../../../core/services/auth.service';
           <div class="pair-user">
             <wm-avatar name="Partner" [hue]="340" [size]="64"></wm-avatar>
             <div class="pair-name">Partner</div>
-            <div class="pair-status pair-status--waiting">Filtering…</div>
+            <div class="pair-status" [class.pair-status--ready]="partnerReady()" [class.pair-status--waiting]="!partnerReady()">
+              {{ partnerReady() ? 'Ready' : 'Filtering…' }}
+            </div>
           </div>
         </div>
 
@@ -74,24 +77,56 @@ import { AuthService } from '../../../core/services/auth.service';
     }
   `],
 })
-export class WaitingComponent implements OnInit {
+export class WaitingComponent implements OnInit, OnDestroy {
+  private api   = inject(ApiService);
   private auth  = inject(AuthService);
   private route = inject(ActivatedRoute);
-  readonly user = this.auth.currentUser;
+  readonly user  = this.auth.currentUser;
+  partnerReady   = signal(false);
+
+  private timerId: ReturnType<typeof setInterval> | null = null;
 
   constructor(public router: Router) {}
 
   ngOnInit(): void {
-    setTimeout(() => this.proceed(), 3000);
+    const id = this.route.snapshot.paramMap.get('id');
+    if (!id) { this.proceed(); return; }
+
+    // Check immediately — for solo sessions the status is already 'active'
+    this.api.getSession(id).subscribe(session => {
+      if (session.status !== 'waiting') { this.proceed(); return; }
+
+      // Poll every 3s up to 60s
+      let ticks = 0;
+      this.timerId = setInterval(() => {
+        this.api.getSession(id).subscribe(s => {
+          if (s.status !== 'waiting' || ++ticks >= 20) {
+            this.partnerReady.set(s.status !== 'waiting');
+            this.clearTimer();
+            this.proceed();
+          }
+        });
+      }, 3000);
+    });
   }
+
+  ngOnDestroy(): void { this.clearTimer(); }
 
   proceed(): void {
     const id = this.route.snapshot.paramMap.get('id');
+    this.clearTimer();
     this.router.navigate(['/session', id, 'swipe']);
   }
 
   back(): void {
     const id = this.route.snapshot.paramMap.get('id');
     this.router.navigate(['/session', id, 'filters']);
+  }
+
+  private clearTimer(): void {
+    if (this.timerId !== null) {
+      clearInterval(this.timerId);
+      this.timerId = null;
+    }
   }
 }

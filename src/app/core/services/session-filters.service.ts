@@ -10,15 +10,19 @@ const DEFAULT_FILTERS: Filters = {
     { label: 'Adventure', state: 'nice' }, { label: 'Music', state: 'nice' },
     { label: 'Family', state: 'nice' },
   ],
-  year_min: 2015, year_max: 2025, rating_min: 6.5, runtime_max: 180,
+  year_min: 2000, year_max: 2025, rating_min: 6.0, runtime_max: 200,
   providers: [
-    { label: 'Netflix', state: 'nice' }, { label: 'HBO Max', state: 'nice' },
+    { label: 'Netflix', state: 'nice' }, { label: 'Max', state: 'nice' },
     { label: 'Disney+', state: 'nice' }, { label: 'Mubi', state: 'nice' },
+    { label: 'Prime Video', state: 'nice' }, { label: 'Peacock', state: 'nice' },
+    { label: 'Showtime', state: 'nice' }, { label: 'Paramount+', state: 'nice' },
   ],
   moods: [
     { label: 'feel-good', state: 'nice' }, { label: 'tense', state: 'nice' },
     { label: 'cerebral', state: 'nice' }, { label: 'dreamy', state: 'nice' },
-    { label: 'cozy', state: 'nice' },
+    { label: 'cozy', state: 'nice' }, { label: 'epic', state: 'nice' },
+    { label: 'melancholy', state: 'nice' }, { label: 'mind-bending', state: 'nice' },
+    { label: 'witty', state: 'nice' }, { label: 'fun', state: 'nice' },
   ],
 };
 

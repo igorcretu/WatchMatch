@@ -22,7 +22,7 @@ import { Movie } from '../../../core/models/movie.model';
             @for (m of closest(); track m.id) {
               <div class="closest-card">
                 <div class="closest-poster">
-                  <wm-poster [title]="m.title" [year]="m.year" [hue]="m.hue" [variant]="m.variant"></wm-poster>
+                  <wm-poster [title]="m.title" [year]="m.year" [hue]="m.hue" [variant]="m.variant" [posterPath]="m.poster_path"></wm-poster>
                 </div>
                 <div class="closest-info">
                   <div class="closest-title">{{ m.title }}</div>
@@ -70,9 +70,6 @@ export class NoMatchComponent implements OnInit {
   }
 
   tryAgain(): void {
-    const u = this.route.snapshot.paramMap.get('id');
-    this.api.createSession().subscribe(session =>
-      this.router.navigate(['/session', session.id, 'filters'])
-    );
+    this.router.navigate(['/session/new']);
   }
 }

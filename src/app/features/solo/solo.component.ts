@@ -23,9 +23,9 @@ import { Movie } from '../../core/models/movie.model';
 
         <div class="picks-grid">
           @for (m of picks(); track m.id) {
-            <div class="pick" (click)="router.navigate(['/session/new'])">
+            <div class="pick" (click)="startSolo()">
               <div class="pick-poster">
-                <wm-poster [title]="m.title" [year]="m.year" [hue]="m.hue" [variant]="m.variant"></wm-poster>
+                <wm-poster [title]="m.title" [year]="m.year" [hue]="m.hue" [variant]="m.variant" [posterPath]="m.poster_path"></wm-poster>
               </div>
               <div class="pick-title">{{ m.title }}</div>
               <div class="pick-meta">{{ m.providers[0] }} · {{ m.runtime }}m</div>
@@ -33,7 +33,7 @@ import { Movie } from '../../core/models/movie.model';
           }
         </div>
 
-        <button class="btn-primary" (click)="router.navigate(['/session/new'])">Start solo session →</button>
+        <button class="btn-primary" (click)="startSolo()">Start solo session →</button>
       </div>
     </div>
   `,
@@ -62,5 +62,11 @@ export class SoloComponent implements OnInit {
 
   ngOnInit(): void {
     this.api.getMovies().subscribe(movies => this.picks.set(movies.slice(0, 6)));
+  }
+
+  startSolo(): void {
+    this.api.createSession({ solo: true, contentType: 'both' }).subscribe(session =>
+      this.router.navigate(['/session', session.id, 'filters'])
+    );
   }
 }

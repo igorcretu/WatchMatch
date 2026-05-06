@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { InviteResponse } from '../models/movie.model';
 
 export interface TokenResponse {
   access_token: string;
@@ -13,6 +14,7 @@ export interface TokenResponse {
   email: string;
   hue: number;
   partner_id: string | null;
+  theme?: string;
 }
 
 const TOKEN_KEY = 'wm_token';
@@ -56,6 +58,42 @@ export class AuthService {
           localStorage.setItem(USER_KEY, JSON.stringify(updated));
         }
       })
+    );
+  }
+
+  generateInvite(): Observable<InviteResponse> {
+    return this.http.post<InviteResponse>(`${this.base}/auth/invite`, {});
+  }
+
+  pairByToken(token: string): Observable<{ partner_id: string }> {
+    return this.http.post<{ partner_id: string }>(`${this.base}/auth/pair-by-token`, { token }).pipe(
+      tap((res: any) => {
+        const profile = this._profile();
+        if (profile) {
+          const updated = { ...profile, partner_id: res.partner_id };
+          this._profile.set(updated);
+          localStorage.setItem(USER_KEY, JSON.stringify(updated));
+        }
+      })
+    );
+  }
+
+  updateTheme(theme: 'dark' | 'light'): Observable<{ theme: string }> {
+    return this.http.patch<{ theme: string }>(`${this.base}/auth/me/theme`, { theme }).pipe(
+      tap(res => {
+        const profile = this._profile();
+        if (profile) {
+          const updated = { ...profile, theme: res.theme };
+          this._profile.set(updated);
+          localStorage.setItem(USER_KEY, JSON.stringify(updated));
+        }
+      })
+    );
+  }
+
+  deleteAccount(password: string): Observable<void> {
+    return this.http.request<void>('DELETE', `${this.base}/auth/me`, { body: { password } }).pipe(
+      tap(() => this.logout())
     );
   }
 

@@ -3,6 +3,7 @@ import { TabBarComponent } from '../../../layout/tab-bar/tab-bar.component';
 import { StatComponent } from '../../../shared/components/stat/stat.component';
 import { IconComponent } from '../../../shared/components/icon/icon.component';
 import { ApiService } from '../../../core/services/api.service';
+import { Stats } from '../../../core/models/movie.model';
 
 @Component({
   selector: 'wm-stats',
@@ -18,15 +19,15 @@ import { ApiService } from '../../../core/services/api.service';
         </header>
 
         <div class="stats-grid">
-          <wm-stat label="Films matched"     [value]="matchCount()"></wm-stat>
-          <wm-stat label="Total swipes"      [value]="matchCount() * 4"></wm-stat>
-          <wm-stat label="Watched together"  [value]="watchedCount()"></wm-stat>
-          <wm-stat label="Agreement rate"    value="—" accent="var(--wm-amber)"></wm-stat>
+          <wm-stat label="Films matched"    [value]="stats()?.match_count ?? 0"></wm-stat>
+          <wm-stat label="Total swipes"     [value]="stats()?.total_swipes ?? 0"></wm-stat>
+          <wm-stat label="Watched together" [value]="stats()?.watched_count ?? 0"></wm-stat>
+          <wm-stat label="Agreement rate"   [value]="agreementLabel()" accent="var(--wm-amber)"></wm-stat>
         </div>
 
         <div class="section">
           <div class="section-title">Top genres together</div>
-          @for (g of topGenres; track g.genre) {
+          @for (g of stats()?.top_genres ?? []; track g.genre) {
             <div class="genre-row">
               <div class="genre-name">{{ g.genre }}</div>
               <div class="genre-bar-wrap">
@@ -41,13 +42,20 @@ import { ApiService } from '../../../core/services/api.service';
           <div class="section-title">Fun facts</div>
           <div class="fact-card">
             <wm-icon name="trophy" [size]="20" style="color:var(--wm-amber)"></wm-icon>
-            <p>You've matched <strong>{{ matchCount() }} films</strong> together!</p>
+            <p>You've matched <strong>{{ stats()?.match_count ?? 0 }} films</strong> together!</p>
           </div>
           <div class="fact-card">
             <wm-icon name="spark" [size]="20" style="color:var(--wm-amber)"></wm-icon>
-            <p>You've watched <strong>{{ watchedCount() }}</strong> of them already.</p>
+            <p>You've watched <strong>{{ stats()?.watched_count ?? 0 }}</strong> of them already.</p>
           </div>
         </div>
+
+        <div class="export-row">
+          <button class="btn-export" (click)="exportCsv()">
+            <wm-icon name="list" [size]="16"></wm-icon> Export history as CSV
+          </button>
+        </div>
+
         <div style="height:120px"></div>
       </div>
       <wm-tab-bar active="history"></wm-tab-bar>
@@ -70,21 +78,32 @@ import { ApiService } from '../../../core/services/api.service';
     .fact-card { background: var(--wm-bg2); border: 1px solid var(--wm-line); border-radius: 14px; padding: 16px; display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; }
     .fact-card p { font-size: 14px; line-height: 1.5; color: var(--wm-text-dim); }
     .fact-card strong { color: var(--wm-text); }
+    .export-row { padding: 0 20px 16px; }
+    .btn-export { display: flex; align-items: center; gap: 8px; background: transparent; border: 1px solid var(--wm-line-strong); color: var(--wm-text-dim); border-radius: var(--wm-r-pill); height: 40px; padding: 0 20px; font-size: 13px; cursor: pointer; }
+    .btn-export:hover { color: var(--wm-text); border-color: var(--wm-amber-line); }
   `],
 })
 export class StatsComponent implements OnInit {
   private api = inject(ApiService);
-  matchCount   = signal(0);
-  watchedCount = signal(0);
-
-  topGenres = [
-    { genre: 'Drama',    pct: 82 }, { genre: 'Comedy',  pct: 68 },
-    { genre: 'Thriller', pct: 55 }, { genre: 'Sci-Fi',  pct: 44 },
-    { genre: 'Romance',  pct: 38 },
-  ];
+  stats = signal<Stats | null>(null);
 
   ngOnInit(): void {
-    this.api.getQueue().subscribe(q => this.matchCount.set(q.length));
-    this.api.getHistory().subscribe(h => this.watchedCount.set(h.length));
+    this.api.getStats().subscribe(s => this.stats.set(s));
+  }
+
+  agreementLabel(): string {
+    const rate = this.stats()?.agreement_rate;
+    return rate != null ? `${Math.round(rate * 100)}%` : '—';
+  }
+
+  exportCsv(): void {
+    this.api.exportCsv().subscribe(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'watchmatch-history.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
   }
 }

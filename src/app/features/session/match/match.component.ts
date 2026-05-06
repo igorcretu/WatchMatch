@@ -8,12 +8,16 @@ import { AuthService } from '../../../core/services/auth.service';
 import { Movie } from '../../../core/models/movie.model';
 
 const DEEP_LINKS: Record<string, string> = {
-  'Netflix':    'https://www.netflix.com',
-  'HBO Max':    'https://www.max.com',
-  'Disney+':    'https://www.disneyplus.com',
-  'Amazon':     'https://www.amazon.com/gp/video',
-  'Apple TV+':  'https://tv.apple.com',
-  'Hulu':       'https://www.hulu.com',
+  'Netflix':     'https://www.netflix.com',
+  'Max':         'https://www.max.com',
+  'Disney+':     'https://www.disneyplus.com',
+  'Prime Video': 'https://www.amazon.com/gp/video',
+  'Apple TV+':   'https://tv.apple.com',
+  'Hulu':        'https://www.hulu.com',
+  'Showtime':    'https://www.sho.com',
+  'Peacock':     'https://www.peacocktv.com',
+  'Mubi':        'https://mubi.com',
+  'Paramount+':  'https://www.paramountplus.com',
 };
 
 @Component({
@@ -25,7 +29,7 @@ const DEEP_LINKS: Record<string, string> = {
     @if (movie(); as m) {
       <div class="match">
         <div class="bg-poster">
-          <wm-poster [title]="m.title" [year]="m.year" [hue]="m.hue" [variant]="m.variant"></wm-poster>
+          <wm-poster [title]="m.title" [year]="m.year" [hue]="m.hue" [variant]="m.variant" [posterPath]="m.poster_path"></wm-poster>
           <div class="bg-overlay"></div>
         </div>
 
@@ -33,7 +37,7 @@ const DEEP_LINKS: Record<string, string> = {
           <div class="match-label">IT'S A MATCH</div>
 
           <div class="match-poster">
-            <wm-poster [title]="m.title" [year]="m.year" [hue]="m.hue" [variant]="m.variant"></wm-poster>
+            <wm-poster [title]="m.title" [year]="m.year" [hue]="m.hue" [variant]="m.variant" [posterPath]="m.poster_path"></wm-poster>
           </div>
 
           <h1 class="match-title">{{ m.title }}</h1>

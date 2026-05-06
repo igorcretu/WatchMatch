@@ -100,7 +100,10 @@ export class SessionStartComponent {
 
   start(): void {
     this.loading.set(true);
-    this.api.createSession(this.user()?.partner_id ?? undefined).subscribe({
+    this.api.createSession({
+      partnerId:   this.user()?.partner_id ?? null,
+      contentType: this.type,
+    }).subscribe({
       next: session => this.router.navigate(['/session', session.id, 'filters']),
       error: () => {
         this.error.set('Could not start session. Is the API reachable?');

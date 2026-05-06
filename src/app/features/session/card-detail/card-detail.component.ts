@@ -14,7 +14,7 @@ import { Movie } from '../../../core/models/movie.model';
     @if (movie(); as m) {
       <div class="detail">
         <div class="hero-poster">
-          <wm-poster [title]="m.title" [year]="m.year" [hue]="m.hue" [variant]="m.variant"></wm-poster>
+          <wm-poster [title]="m.title" [year]="m.year" [hue]="m.hue" [variant]="m.variant" [posterPath]="m.poster_path"></wm-poster>
           <div class="hero-fade"></div>
           <button class="close-btn" (click)="back()"><wm-icon name="back" [size]="18"></wm-icon></button>
         </div>

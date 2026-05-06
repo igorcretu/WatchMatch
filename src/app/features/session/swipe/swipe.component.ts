@@ -46,7 +46,7 @@ type SwipeAction = 'like' | 'pass' | 'super' | 'skip' | 'hide' | 'seen';
           @if (nextMovie(); as next) {
             <div class="card card--back">
               <div class="card-poster">
-                <wm-poster [title]="next.title" [year]="next.year" [hue]="next.hue" [variant]="next.variant"></wm-poster>
+                <wm-poster [title]="next.title" [year]="next.year" [hue]="next.hue" [variant]="next.variant" [posterPath]="next.poster_path"></wm-poster>
               </div>
             </div>
           }
@@ -64,7 +64,7 @@ type SwipeAction = 'like' | 'pass' | 'super' | 'skip' | 'hide' | 'seen';
             </div>
 
             <div class="card-poster">
-              <wm-poster [title]="movie.title" [year]="movie.year" [hue]="movie.hue" [variant]="movie.variant"></wm-poster>
+              <wm-poster [title]="movie.title" [year]="movie.year" [hue]="movie.hue" [variant]="movie.variant" [posterPath]="movie.poster_path"></wm-poster>
               <div class="poster-fade"></div>
             </div>
 
@@ -227,7 +227,7 @@ export class SwipeComponent implements OnInit {
 
   ngOnInit(): void {
     this.sessionId = this.route.snapshot.paramMap.get('id') ?? '';
-    this.api.getMovies().subscribe(movies => {
+    this.api.getMoviesForSession(this.sessionId).subscribe(movies => {
       this.movies.set(movies);
       this.loading.set(false);
     });

@@ -26,7 +26,7 @@ import { QueueItem } from '../../../core/models/movie.model';
             <div class="list-item">
               <div class="item-poster">
                 <wm-poster [title]="item.movie.title" [year]="item.movie.year"
-                  [hue]="item.movie.hue" [variant]="item.movie.variant"></wm-poster>
+                  [hue]="item.movie.hue" [variant]="item.movie.variant" [posterPath]="item.movie.poster_path"></wm-poster>
               </div>
               <div class="item-info">
                 <div class="item-title">{{ item.movie.title }}</div>
@@ -34,7 +34,7 @@ import { QueueItem } from '../../../core/models/movie.model';
                 <div class="watched-badge"><wm-icon name="check" [size]="10"></wm-icon> Watched</div>
                 <div class="stars">
                   @for (n of [1,2,3,4,5]; track n) {
-                    <button class="star-btn" [class.star-btn--active]="(ratingFor(item.id) ?? 0) >= n"
+                    <button class="star-btn" [class.star-btn--active]="(item.rating ?? 0) >= n"
                       (click)="rate(item, n)">★</button>
                   }
                 </div>
@@ -77,8 +77,7 @@ import { QueueItem } from '../../../core/models/movie.model';
 })
 export class HistoryComponent implements OnInit {
   private api = inject(ApiService);
-  items   = signal<QueueItem[]>([]);
-  ratings = signal<Record<string, number>>({});
+  items = signal<QueueItem[]>([]);
 
   constructor(public router: Router) {}
 
@@ -86,13 +85,9 @@ export class HistoryComponent implements OnInit {
     this.api.getHistory().subscribe(items => this.items.set(items));
   }
 
-  ratingFor(itemId: string): number | undefined {
-    return this.ratings()[itemId];
-  }
-
   rate(item: QueueItem, stars: number): void {
     this.api.rateMovie(item.movie_id, stars).subscribe(() => {
-      this.ratings.update(r => ({ ...r, [item.id]: stars }));
+      this.items.update(list => list.map(i => i.id === item.id ? { ...i, rating: stars } : i));
     });
   }
 }

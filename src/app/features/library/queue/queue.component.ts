@@ -26,7 +26,7 @@ import { QueueItem } from '../../../core/models/movie.model';
               <div class="item-index">{{ i + 1 }}</div>
               <div class="item-poster">
                 <wm-poster [title]="item.movie.title" [year]="item.movie.year"
-                  [hue]="item.movie.hue" [variant]="item.movie.variant"></wm-poster>
+                  [hue]="item.movie.hue" [variant]="item.movie.variant" [posterPath]="item.movie.poster_path"></wm-poster>
               </div>
               <div class="item-info">
                 <div class="item-title">{{ item.movie.title }}</div>
